@@ -2,11 +2,13 @@ import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "./atoms";
-import Category from "./components/Category";
+import { DragDropContext } from "react-beautiful-dnd";
+import Board from "./components/Board";
 
 const Wrapper = styled.div`
   width: 100vw;
-  height: 100vh;
+  height: auto;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,7 +20,7 @@ const Form = styled.form`
   margin-bottom: 10px;
 `;
 
-const CategoryContainer = styled.div`
+const BoardsContainer = styled.div`
   display: grid;
   width: 100%;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -26,35 +28,39 @@ const CategoryContainer = styled.div`
 `;
 
 interface IForm {
-  category: string;
+  board: string;
 }
 
 function App() {
-  const [categories, setCategories] = useRecoilState(toDoState);
+  const [boards, setBoards] = useRecoilState(toDoState);
   const { register, handleSubmit, setValue } = useForm<IForm>();
 
-  const onValid = ({ category }: IForm) => {
-    setCategories((allCategories) => {
-      return { ...allCategories, [category]: [] };
+  const onDragEnd = () => {};
+
+  const onValid = ({ board }: IForm) => {
+    setBoards((allBoards) => {
+      return { ...allBoards, [board]: [] };
     });
 
-    setValue("category", "");
+    setValue("board", "");
   };
 
   return (
     <Wrapper>
-      <Form onSubmit={handleSubmit(onValid)}>
-        <input
-          {...register("category", { required: true })}
-          type="text"
-          placeholder="Create a List"
-        />
-      </Form>
-      <CategoryContainer>
-        {Object.keys(categories).map((cat, index) => (
-          <Category category={cat} key={index} toDos={categories[cat]} />
-        ))}
-      </CategoryContainer>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Form onSubmit={handleSubmit(onValid)}>
+          <input
+            {...register("board", { required: true })}
+            type="text"
+            placeholder="Create a List"
+          />
+        </Form>
+        <BoardsContainer>
+          {Object.keys(boards).map((cat, index) => (
+            <Board board={cat} key={index} toDos={boards[cat]} />
+          ))}
+        </BoardsContainer>
+      </DragDropContext>
     </Wrapper>
   );
 }

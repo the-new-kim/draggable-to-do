@@ -1,7 +1,9 @@
+import { Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { IToDo, IToDoState, toDoState } from "../atoms";
+import Card from "./Card";
 
 const Wrapper = styled.div`
   background-color: lightcoral;
@@ -19,8 +21,10 @@ const Form = styled.form`
   width: 100%;
 `;
 
-interface ICategoryProps {
-  category: string;
+const ToDos = styled.div``;
+
+interface IBoardProps {
+  board: string;
   toDos: IToDo[];
 }
 
@@ -28,17 +32,16 @@ interface IForm {
   toDo: string;
 }
 
-function Category({ category, toDos }: ICategoryProps) {
+function Board({ board, toDos }: IBoardProps) {
   const setToDos = useSetRecoilState<IToDoState>(toDoState);
   const { register, handleSubmit, setValue } = useForm<IForm>();
   const onValid = ({ toDo }: IForm) => {
-    console.log(toDo);
     setToDos((allCategories) => {
-      const allToDos = allCategories[category];
+      const allToDos = allCategories[board];
       const newToDo = { text: toDo, id: Date.now() };
       return {
         ...allCategories,
-        [category]: [newToDo, ...allToDos],
+        [board]: [newToDo, ...allToDos],
       };
     });
     setValue("toDo", "");
@@ -46,7 +49,7 @@ function Category({ category, toDos }: ICategoryProps) {
 
   return (
     <Wrapper>
-      <Title>{category}</Title>
+      <Title>{board}</Title>
       <Form onSubmit={handleSubmit(onValid)}>
         <input
           {...register("toDo", { required: true })}
@@ -54,13 +57,18 @@ function Category({ category, toDos }: ICategoryProps) {
           placeholder="Create a List"
         />
       </Form>
-      <ul>
-        {toDos.map((toDo) => (
-          <li key={toDo.id}>{toDo.text}</li>
-        ))}
-      </ul>
+      <Droppable droppableId={board}>
+        {(magic) => (
+          <ToDos ref={magic.innerRef} {...magic.droppableProps}>
+            {toDos.map((toDo, index) => (
+              <Card key={toDo.id} text={toDo.text} index={index} />
+            ))}
+            {magic.placeholder}
+          </ToDos>
+        )}
+      </Droppable>
     </Wrapper>
   );
 }
 
-export default Category;
+export default Board;
