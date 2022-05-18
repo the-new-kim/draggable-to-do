@@ -1,25 +1,61 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useForm } from "react-hook-form";
+import { useRecoilState } from "recoil";
+import styled from "styled-components";
+import { toDoState } from "./atoms";
+import Category from "./components/Category";
+
+const Wrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 10px;
+`;
+
+const Form = styled.form`
+  margin-bottom: 10px;
+`;
+
+const CategoryContainer = styled.div`
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 10px;
+`;
+
+interface IForm {
+  category: string;
+}
 
 function App() {
+  const [categories, setCategories] = useRecoilState(toDoState);
+  const { register, handleSubmit, setValue } = useForm<IForm>();
+
+  const onValid = ({ category }: IForm) => {
+    setCategories((allCategories) => {
+      return { ...allCategories, [category]: [] };
+    });
+
+    setValue("category", "");
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Wrapper>
+      <Form onSubmit={handleSubmit(onValid)}>
+        <input
+          {...register("category", { required: true })}
+          type="text"
+          placeholder="Create a List"
+        />
+      </Form>
+      <CategoryContainer>
+        {Object.keys(categories).map((cat, index) => (
+          <Category category={cat} key={index} toDos={categories[cat]} />
+        ))}
+      </CategoryContainer>
+    </Wrapper>
   );
 }
 
