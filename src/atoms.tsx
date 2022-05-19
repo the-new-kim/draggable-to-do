@@ -13,12 +13,15 @@ export const toDoState = atom<IToDoState>({
   key: "toDos",
   default: {
     "To Do": [
-      { text: "j", id: 1 },
-      { text: "s", id: 2 },
+      { text: "j", id: 11 },
+      { text: "s", id: 12 },
     ],
     Doing: [
       { text: "sdf", id: 1 },
       { text: "sdddd", id: 2 },
+      { text: "sdf", id: 3 },
+      { text: "sdaaddd", id: 4 },
+      { text: "sddaaaaadd", id: 5 },
     ],
   },
 });

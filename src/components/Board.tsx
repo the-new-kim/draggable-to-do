@@ -1,4 +1,5 @@
-import { Droppable } from "react-beautiful-dnd";
+import React from "react";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
@@ -26,13 +27,14 @@ const ToDos = styled.div``;
 interface IBoardProps {
   board: string;
   toDos: IToDo[];
+  boardIndex: number;
 }
 
 interface IForm {
   toDo: string;
 }
 
-function Board({ board, toDos }: IBoardProps) {
+function Board({ board, toDos, boardIndex }: IBoardProps) {
   const setToDos = useSetRecoilState<IToDoState>(toDoState);
   const { register, handleSubmit, setValue } = useForm<IForm>();
   const onValid = ({ toDo }: IForm) => {
@@ -48,27 +50,37 @@ function Board({ board, toDos }: IBoardProps) {
   };
 
   return (
-    <Wrapper>
-      <Title>{board}</Title>
-      <Form onSubmit={handleSubmit(onValid)}>
-        <input
-          {...register("toDo", { required: true })}
-          type="text"
-          placeholder="Create a List"
-        />
-      </Form>
-      <Droppable droppableId={board}>
-        {(magic) => (
-          <ToDos ref={magic.innerRef} {...magic.droppableProps}>
-            {toDos.map((toDo, index) => (
-              <Card key={toDo.id} text={toDo.text} index={index} />
-            ))}
-            {magic.placeholder}
-          </ToDos>
-        )}
-      </Droppable>
-    </Wrapper>
+    <Draggable draggableId={board} key={board} index={boardIndex}>
+      {(magic) => (
+        <Wrapper ref={magic.innerRef} {...magic.draggableProps}>
+          <Title {...magic.dragHandleProps}>{board}</Title>
+
+          <Form onSubmit={handleSubmit(onValid)}>
+            <input
+              {...register("toDo", { required: true })}
+              type="text"
+              placeholder="Create a List"
+            />
+          </Form>
+          <Droppable droppableId={board}>
+            {(magic) => (
+              <ToDos ref={magic.innerRef} {...magic.droppableProps}>
+                {toDos.map((toDo, index) => (
+                  <Card
+                    key={toDo.id}
+                    toDo={toDo.text}
+                    index={index}
+                    toDoId={toDo.id}
+                  />
+                ))}
+                {magic.placeholder}
+              </ToDos>
+            )}
+          </Droppable>
+        </Wrapper>
+      )}
+    </Draggable>
   );
 }
 
-export default Board;
+export default React.memo(Board);
