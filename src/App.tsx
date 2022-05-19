@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { toDoState } from "./atoms";
+import { toDoState, trashState } from "./atoms";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import Board from "./components/Board";
 
@@ -27,6 +27,23 @@ const BoardsContainer = styled.div`
   gap: 10px;
 `;
 
+interface ITrashProps {
+  isVisible: boolean;
+}
+
+const Trash = styled.div<ITrashProps>`
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: 200px;
+  height: 200px;
+  background-color: darkblue;
+  color: white;
+  font-size: 50px;
+  transition: opacity ease-out 500ms;
+  opacity: ${(props) => (props.isVisible ? 1 : 0)};
+`;
+
 interface IForm {
   board: string;
 }
@@ -34,12 +51,26 @@ interface IForm {
 function App() {
   const [boards, setBoards] = useRecoilState(toDoState);
   const { register, handleSubmit, setValue } = useForm<IForm>();
+
+  const [trashIsVisible, setTrashIsVisible] = useRecoilState(trashState);
+
+  const onDragStart = (info: DropResult) => {
+    setTrashIsVisible((allTrashes) => {
+      return { ...allTrashes, [info.type]: !allTrashes[info.type] };
+    });
+  };
+
   const onDragEnd = (info: DropResult) => {
+    setTrashIsVisible((allTrashes) => {
+      return { ...allTrashes, [info.type]: !allTrashes[info.type] };
+    });
+
     const { destination, source } = info;
-    console.log(info);
+
     if (!destination) return;
     // moving boards
-    if (destination?.droppableId === "list") {
+
+    if (destination.droppableId === "list") {
       setBoards((allBoards) => {
         const boardNames = Object.keys(allBoards);
         const sourceName = boardNames[source.index];
@@ -97,7 +128,7 @@ function App() {
 
   return (
     <Wrapper>
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         <Form onSubmit={handleSubmit(onValid)}>
           <input
             {...register("board", { required: true })}
@@ -105,7 +136,7 @@ function App() {
             placeholder="Create a List"
           />
         </Form>
-        <Droppable droppableId="list" type="COLUMN" direction="horizontal">
+        <Droppable droppableId="list" type="BOARD" direction="horizontal">
           {(magic) => (
             <BoardsContainer ref={magic.innerRef} {...magic.droppableProps}>
               {Object.keys(boards).map((board, index) => (
@@ -118,6 +149,32 @@ function App() {
               ))}
               {magic.placeholder}
             </BoardsContainer>
+          )}
+        </Droppable>
+
+        <Droppable droppableId="CARD" type="CARD">
+          {(magic) => (
+            <Trash
+              isVisible={trashIsVisible.CARD}
+              ref={magic.innerRef}
+              {...magic.droppableProps}
+            >
+              Card
+              {magic.placeholder}
+            </Trash>
+          )}
+        </Droppable>
+
+        <Droppable droppableId="BOARD" type="BOARD">
+          {(magic) => (
+            <Trash
+              isVisible={trashIsVisible.BOARD}
+              ref={magic.innerRef}
+              {...magic.droppableProps}
+            >
+              Board
+              {magic.placeholder}
+            </Trash>
           )}
         </Droppable>
       </DragDropContext>

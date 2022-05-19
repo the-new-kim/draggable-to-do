@@ -25,3 +25,15 @@ export const toDoState = atom<IToDoState>({
     ],
   },
 });
+
+interface ITrashState {
+  [key: string]: boolean;
+}
+
+export const trashState = atom<ITrashState>({
+  key: "trashIsVisible",
+  default: {
+    BOARD: false,
+    CARD: false,
+  },
+});

@@ -8,9 +8,11 @@ import Card from "./Card";
 
 const Wrapper = styled.div`
   background-color: lightcoral;
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+
   > * {
-    margin-bottom: 10px;
+    padding: 10px;
   }
 `;
 
@@ -22,7 +24,20 @@ const Form = styled.form`
   width: 100%;
 `;
 
-const ToDos = styled.div``;
+interface ICardsProps {
+  cardIsDraggingOver: boolean;
+  draggingFromThisWith: boolean;
+}
+
+const Cards = styled.div<ICardsProps>`
+  background-color: ${(props) =>
+    props.cardIsDraggingOver
+      ? "blue"
+      : props.draggingFromThisWith
+      ? "red"
+      : "transparent"};
+  flex-grow: 1;
+`;
 
 interface IBoardProps {
   board: string;
@@ -62,9 +77,14 @@ function Board({ board, toDos, boardIndex }: IBoardProps) {
               placeholder="Create a List"
             />
           </Form>
-          <Droppable droppableId={board}>
-            {(magic) => (
-              <ToDos ref={magic.innerRef} {...magic.droppableProps}>
+          <Droppable droppableId={board} type="CARD">
+            {(magic, info) => (
+              <Cards
+                ref={magic.innerRef}
+                cardIsDraggingOver={info.isDraggingOver}
+                draggingFromThisWith={Boolean(info.draggingFromThisWith)}
+                {...magic.droppableProps}
+              >
                 {toDos.map((toDo, index) => (
                   <Card
                     key={toDo.id}
@@ -74,7 +94,7 @@ function Board({ board, toDos, boardIndex }: IBoardProps) {
                   />
                 ))}
                 {magic.placeholder}
-              </ToDos>
+              </Cards>
             )}
           </Droppable>
         </Wrapper>

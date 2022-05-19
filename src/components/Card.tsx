@@ -17,7 +17,7 @@ interface ICard {
 function Card({ toDo, index, toDoId }: ICard) {
   return (
     <Draggable key={toDo} index={index} draggableId={toDoId + ""}>
-      {(magic, info) => (
+      {(magic) => (
         <ToDoItem
           ref={magic.innerRef}
           {...magic.dragHandleProps}
