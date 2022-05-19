@@ -26,12 +26,17 @@ export const toDoState = atom<IToDoState>({
   },
 });
 
+// export enum TrashTypes {
+//   "BOARD" = "BOARD",
+//   "CARD" = "CARD",
+// }
+
 interface ITrashState {
   [key: string]: boolean;
 }
 
 export const trashState = atom<ITrashState>({
-  key: "trashIsVisible",
+  key: "trashStatus",
   default: {
     BOARD: false,
     CARD: false,

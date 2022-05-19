@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { toDoState, trashState } from "./atoms";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import Board from "./components/Board";
+import Trash from "./components/Trash";
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -27,23 +28,6 @@ const BoardsContainer = styled.div`
   gap: 10px;
 `;
 
-interface ITrashProps {
-  isVisible: boolean;
-}
-
-const Trash = styled.div<ITrashProps>`
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  width: 200px;
-  height: 200px;
-  background-color: darkblue;
-  color: white;
-  font-size: 50px;
-  transition: opacity ease-out 500ms;
-  opacity: ${(props) => (props.isVisible ? 1 : 0)};
-`;
-
 interface IForm {
   board: string;
 }
@@ -52,16 +36,17 @@ function App() {
   const [boards, setBoards] = useRecoilState(toDoState);
   const { register, handleSubmit, setValue } = useForm<IForm>();
 
-  const [trashIsVisible, setTrashIsVisible] = useRecoilState(trashState);
+  const [trashStatus, setTrashStatus] = useRecoilState(trashState);
 
   const onDragStart = (info: DropResult) => {
-    setTrashIsVisible((allTrashes) => {
+    setTrashStatus((allTrashes) => {
       return { ...allTrashes, [info.type]: !allTrashes[info.type] };
     });
   };
 
   const onDragEnd = (info: DropResult) => {
-    setTrashIsVisible((allTrashes) => {
+    console.log(info);
+    setTrashStatus((allTrashes) => {
       return { ...allTrashes, [info.type]: !allTrashes[info.type] };
     });
 
@@ -70,7 +55,28 @@ function App() {
     if (!destination) return;
     // moving boards
 
-    if (destination.droppableId === "list") {
+    if (destination.droppableId === "BOARD") {
+      setBoards((allBoards) => {
+        const boardNames = Object.keys(allBoards);
+
+        boardNames.splice(source.index, 1);
+        let newBoards = {};
+
+        boardNames.map((boardName) => {
+          newBoards = { ...newBoards, [boardName]: allBoards[boardName] };
+        });
+
+        return newBoards;
+      });
+    } else if (destination.droppableId === "CARD") {
+      setBoards((allBoards) => {
+        const copyBoard = [...allBoards[source.droppableId]];
+
+        copyBoard.splice(source.index, 1);
+
+        return { ...allBoards, [source.droppableId]: copyBoard };
+      });
+    } else if (destination.droppableId === "list") {
       setBoards((allBoards) => {
         const boardNames = Object.keys(allBoards);
         const sourceName = boardNames[source.index];
@@ -152,31 +158,13 @@ function App() {
           )}
         </Droppable>
 
-        <Droppable droppableId="CARD" type="CARD">
-          {(magic) => (
-            <Trash
-              isVisible={trashIsVisible.CARD}
-              ref={magic.innerRef}
-              {...magic.droppableProps}
-            >
-              Card
-              {magic.placeholder}
-            </Trash>
-          )}
-        </Droppable>
-
-        <Droppable droppableId="BOARD" type="BOARD">
-          {(magic) => (
-            <Trash
-              isVisible={trashIsVisible.BOARD}
-              ref={magic.innerRef}
-              {...magic.droppableProps}
-            >
-              Board
-              {magic.placeholder}
-            </Trash>
-          )}
-        </Droppable>
+        {Object.keys(trashStatus).map((trashType, index) => (
+          <Trash
+            key={index}
+            type={trashType}
+            isVisible={trashStatus[trashType]}
+          />
+        ))}
       </DragDropContext>
     </Wrapper>
   );
