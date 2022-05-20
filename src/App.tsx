@@ -1,10 +1,13 @@
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { toDoState, trashState } from "./atoms";
+import { toDoState } from "./models/atom.toDos";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import Board from "./components/Board";
 import Trash from "./components/Trash";
+import { useEffect } from "react";
+import { saveToDos } from "./models/handle.localStorage";
+import { DroppableTypes, trashState } from "./models/atom.trash";
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -33,7 +36,7 @@ interface IForm {
 }
 
 function App() {
-  const [boards, setBoards] = useRecoilState(toDoState);
+  const [toDos, setToDos] = useRecoilState(toDoState);
   const { register, handleSubmit, setValue } = useForm<IForm>();
 
   const [trashStatus, setTrashStatus] = useRecoilState(trashState);
@@ -45,7 +48,6 @@ function App() {
   };
 
   const onDragEnd = (info: DropResult) => {
-    console.log(info);
     setTrashStatus((allTrashes) => {
       return { ...allTrashes, [info.type]: !allTrashes[info.type] };
     });
@@ -53,70 +55,56 @@ function App() {
     const { destination, source } = info;
 
     if (!destination) return;
-    // moving boards
 
-    if (destination.droppableId === "BOARD") {
-      setBoards((allBoards) => {
-        const boardNames = Object.keys(allBoards);
+    // moving || removing Boards
+    if (
+      destination.droppableId === "list" ||
+      destination.droppableId === DroppableTypes.BOARD
+    ) {
+      return setToDos((allToDos) => {
+        const boardTitles = Object.keys(allToDos);
+        const sourceTitle = boardTitles[source.index];
 
-        boardNames.splice(source.index, 1);
-        let newBoards = {};
-
-        boardNames.map((boardName) => {
-          newBoards = { ...newBoards, [boardName]: allBoards[boardName] };
+        boardTitles.splice(source.index, 1);
+        destination.droppableId === "list" &&
+          boardTitles.splice(destination.index, 0, sourceTitle);
+        let result = {};
+        boardTitles.map((boardName) => {
+          result = { ...result, [boardName]: allToDos[boardName] };
         });
 
-        return newBoards;
-      });
-    } else if (destination.droppableId === "CARD") {
-      setBoards((allBoards) => {
-        const copyBoard = [...allBoards[source.droppableId]];
-
-        copyBoard.splice(source.index, 1);
-
-        return { ...allBoards, [source.droppableId]: copyBoard };
-      });
-    } else if (destination.droppableId === "list") {
-      setBoards((allBoards) => {
-        const boardNames = Object.keys(allBoards);
-        const sourceName = boardNames[source.index];
-
-        boardNames.splice(source.index, 1);
-        boardNames.splice(destination.index, 0, sourceName);
-
-        let newBoards = {};
-
-        boardNames.map((boardName) => {
-          newBoards = { ...newBoards, [boardName]: allBoards[boardName] };
-        });
-
-        return newBoards;
+        return result;
       });
     }
-    // moving card in a same board
-    else if (destination.droppableId === source.droppableId) {
-      setBoards((allBoards) => {
-        const copyToDo = allBoards[source.droppableId][source.index];
-        const copyBoard = [...allBoards[source.droppableId]];
+
+    // moving card in a same board || remove card
+    if (
+      destination.droppableId === source.droppableId ||
+      destination.droppableId === DroppableTypes.CARD
+    ) {
+      return setToDos((allToDos) => {
+        const copyToDo = allToDos[source.droppableId][source.index];
+        const copyBoard = [...allToDos[source.droppableId]];
 
         copyBoard.splice(source.index, 1);
-        copyBoard.splice(destination.index, 0, copyToDo);
+        destination.droppableId === source.droppableId &&
+          copyBoard.splice(destination.index, 0, copyToDo);
 
-        return { ...allBoards, [source.droppableId]: copyBoard };
+        return { ...allToDos, [source.droppableId]: copyBoard };
       });
     }
     // moving card form a board to the other board
-    else if (destination.droppableId !== source.droppableId) {
-      setBoards((allBoards) => {
-        const copyToDo = allBoards[source.droppableId][source.index];
-        const sourceBoard = [...allBoards[source.droppableId]];
-        const targetBoard = [...allBoards[destination.droppableId]];
+    if (destination.droppableId !== source.droppableId) {
+      return setToDos((allToDos) => {
+        const copyToDo = allToDos[source.droppableId][source.index];
+        const sourceBoard = [...allToDos[source.droppableId]];
+        const targetBoard = [...allToDos[destination.droppableId]];
 
         sourceBoard.splice(source.index, 1);
         targetBoard.splice(destination.index, 0, copyToDo);
 
         return {
-          ...allBoards,
+          ...allToDos,
           [source.droppableId]: sourceBoard,
           [destination.droppableId]: targetBoard,
         };
@@ -125,12 +113,14 @@ function App() {
   };
 
   const onValid = ({ board }: IForm) => {
-    setBoards((allBoards) => {
-      return { ...allBoards, [board]: [] };
+    setToDos((allToDos) => {
+      return { ...allToDos, [board]: [] };
     });
 
     setValue("board", "");
   };
+
+  useEffect(() => saveToDos(toDos), [toDos]);
 
   return (
     <Wrapper>
@@ -142,15 +132,19 @@ function App() {
             placeholder="Create a List"
           />
         </Form>
-        <Droppable droppableId="list" type="BOARD" direction="horizontal">
+        <Droppable
+          droppableId="list"
+          type={DroppableTypes.BOARD}
+          direction="horizontal"
+        >
           {(magic) => (
             <BoardsContainer ref={magic.innerRef} {...magic.droppableProps}>
-              {Object.keys(boards).map((board, index) => (
+              {Object.keys(toDos).map((boardTitle, index) => (
                 <Board
-                  board={board}
+                  boardTitle={boardTitle}
                   key={index}
-                  toDos={boards[board]}
-                  boardIndex={index}
+                  cards={toDos[boardTitle]}
+                  index={index}
                 />
               ))}
               {magic.placeholder}

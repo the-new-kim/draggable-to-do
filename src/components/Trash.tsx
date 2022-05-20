@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 interface IWrapperProps {
   isVisible: boolean;
+  isDraggingOver: boolean;
 }
 
 const Wrapper = styled.div<IWrapperProps>`
@@ -14,8 +15,9 @@ const Wrapper = styled.div<IWrapperProps>`
   background-color: darkblue;
   color: white;
   font-size: 50px;
-  transition: opacity ease-out 500ms;
+  transition: opacity ease-out 500ms, transform ease-out 100ms;
   opacity: ${(props) => (props.isVisible ? 1 : 0)};
+  transform: ${(props) => (props.isDraggingOver ? "scale(2)" : "scale(1)")};
 `;
 
 interface ITrashProps {
@@ -26,9 +28,10 @@ interface ITrashProps {
 function Trash({ type, isVisible }: ITrashProps) {
   return (
     <Droppable droppableId={type} type={type}>
-      {(magic) => (
+      {(magic, info) => (
         <Wrapper
           isVisible={isVisible}
+          isDraggingOver={Boolean(info.draggingOverWith)}
           ref={magic.innerRef}
           {...magic.droppableProps}
         >

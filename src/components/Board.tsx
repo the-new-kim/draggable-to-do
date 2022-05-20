@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { IToDo, IToDoState, toDoState } from "../atoms";
+import { DroppableTypes } from "../models/atom.trash";
+import { IToDo, toDoState } from "../models/atom.toDos";
+import { saveToDos } from "../models/handle.localStorage";
 import Card from "./Card";
 
 const Wrapper = styled.div`
@@ -40,35 +42,39 @@ const Cards = styled.div<ICardsProps>`
 `;
 
 interface IBoardProps {
-  board: string;
-  toDos: IToDo[];
-  boardIndex: number;
+  boardTitle: string;
+  cards: IToDo[];
+  index: number;
 }
 
 interface IForm {
   toDo: string;
 }
 
-function Board({ board, toDos, boardIndex }: IBoardProps) {
-  const setToDos = useSetRecoilState<IToDoState>(toDoState);
+function Board({ boardTitle, cards, index }: IBoardProps) {
+  const [toDos, setToDos] = useRecoilState(toDoState);
   const { register, handleSubmit, setValue } = useForm<IForm>();
   const onValid = ({ toDo }: IForm) => {
     setToDos((allCategories) => {
-      const allToDos = allCategories[board];
+      const allToDos = allCategories[boardTitle];
       const newToDo = { text: toDo, id: Date.now() };
+
       return {
         ...allCategories,
-        [board]: [newToDo, ...allToDos],
+        [boardTitle]: [newToDo, ...allToDos],
       };
     });
+
     setValue("toDo", "");
   };
 
+  useEffect(() => saveToDos(toDos), [toDos]);
+
   return (
-    <Draggable draggableId={board} key={board} index={boardIndex}>
+    <Draggable draggableId={boardTitle} key={boardTitle} index={index}>
       {(magic) => (
         <Wrapper ref={magic.innerRef} {...magic.draggableProps}>
-          <Title {...magic.dragHandleProps}>{board}</Title>
+          <Title {...magic.dragHandleProps}>{boardTitle}</Title>
 
           <Form onSubmit={handleSubmit(onValid)}>
             <input
@@ -77,7 +83,7 @@ function Board({ board, toDos, boardIndex }: IBoardProps) {
               placeholder="Create a List"
             />
           </Form>
-          <Droppable droppableId={board} type="CARD">
+          <Droppable droppableId={boardTitle} type={DroppableTypes.CARD}>
             {(magic, info) => (
               <Cards
                 ref={magic.innerRef}
@@ -85,7 +91,7 @@ function Board({ board, toDos, boardIndex }: IBoardProps) {
                 draggingFromThisWith={Boolean(info.draggingFromThisWith)}
                 {...magic.droppableProps}
               >
-                {toDos.map((toDo, index) => (
+                {cards.map((toDo, index) => (
                   <Card
                     key={toDo.id}
                     toDo={toDo.text}

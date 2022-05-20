@@ -2,10 +2,15 @@ import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
 
-const ToDoItem = styled.div`
-  background-color: yellow;
+interface IWrapperProps {
+  isDragging: boolean;
+}
+
+const Wrapper = styled.div<IWrapperProps>`
+  background-color: ${(props) => (props.isDragging ? "yellow" : "green")};
   padding: 10px;
   margin-bottom: 10px;
+  width: ${(props) => (props.isDragging ? "fit-content" : "auto")};
 `;
 
 interface ICard {
@@ -17,14 +22,15 @@ interface ICard {
 function Card({ toDo, index, toDoId }: ICard) {
   return (
     <Draggable key={toDo} index={index} draggableId={toDoId + ""}>
-      {(magic) => (
-        <ToDoItem
+      {(magic, info) => (
+        <Wrapper
           ref={magic.innerRef}
           {...magic.dragHandleProps}
           {...magic.draggableProps}
+          isDragging={info.isDragging}
         >
           {toDo}
-        </ToDoItem>
+        </Wrapper>
       )}
     </Draggable>
   );
