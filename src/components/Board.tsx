@@ -3,9 +3,9 @@ import { Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { DroppableTypes } from "../models/atom.trash";
-import { IToDo, toDoState } from "../models/atom.toDos";
-import { saveToDos } from "../models/handle.localStorage";
+import { TrashTypes } from "../models/trash";
+import { IToDo, toDoState } from "../models/toDos";
+import { saveToDos } from "../models/localStorage";
 import Card from "./Card";
 
 const Wrapper = styled.div`
@@ -83,7 +83,7 @@ function Board({ boardTitle, cards, index }: IBoardProps) {
               placeholder="Create a List"
             />
           </Form>
-          <Droppable droppableId={boardTitle} type={DroppableTypes.CARD}>
+          <Droppable droppableId={boardTitle} type={TrashTypes.CARD}>
             {(magic, info) => (
               <Cards
                 ref={magic.innerRef}

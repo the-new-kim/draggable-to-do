@@ -1,4 +1,4 @@
-import { IToDoState } from "./atom.toDos";
+import { IToDoState } from "./toDos";
 
 const TODOS_LS = "toDos";
 

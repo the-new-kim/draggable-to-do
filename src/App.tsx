@@ -1,13 +1,13 @@
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { toDoState } from "./models/atom.toDos";
+import { toDoState } from "./models/toDos";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import Board from "./components/Board";
 import Trash from "./components/Trash";
 import { useEffect } from "react";
-import { saveToDos } from "./models/handle.localStorage";
-import { DroppableTypes, trashState } from "./models/atom.trash";
+import { saveToDos } from "./models/localStorage";
+import { TrashTypes, trashState } from "./models/trash";
 
 const Wrapper = styled.div`
   width: 100vw;
@@ -59,7 +59,7 @@ function App() {
     // moving || removing Boards
     if (
       destination.droppableId === "list" ||
-      destination.droppableId === DroppableTypes.BOARD
+      destination.droppableId === TrashTypes.BOARD
     ) {
       return setToDos((allToDos) => {
         const boardTitles = Object.keys(allToDos);
@@ -69,6 +69,7 @@ function App() {
         destination.droppableId === "list" &&
           boardTitles.splice(destination.index, 0, sourceTitle);
         let result = {};
+        //typescript warns... better find other solution...
         boardTitles.map((boardName) => {
           result = { ...result, [boardName]: allToDos[boardName] };
         });
@@ -80,7 +81,7 @@ function App() {
     // moving card in a same board || remove card
     if (
       destination.droppableId === source.droppableId ||
-      destination.droppableId === DroppableTypes.CARD
+      destination.droppableId === TrashTypes.CARD
     ) {
       return setToDos((allToDos) => {
         const copyToDo = allToDos[source.droppableId][source.index];
@@ -134,7 +135,7 @@ function App() {
         </Form>
         <Droppable
           droppableId="list"
-          type={DroppableTypes.BOARD}
+          type={TrashTypes.BOARD}
           direction="horizontal"
         >
           {(magic) => (

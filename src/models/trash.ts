@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 
-export enum DroppableTypes {
+export enum TrashTypes {
   "BOARD" = "BOARD",
   "CARD" = "CARD",
 }
@@ -12,7 +12,7 @@ interface ITrashState {
 export const trashState = atom<ITrashState>({
   key: "trashStatus",
   default: {
-    [DroppableTypes.BOARD]: false,
-    [DroppableTypes.CARD]: false,
+    [TrashTypes.BOARD]: false,
+    [TrashTypes.CARD]: false,
   },
 });

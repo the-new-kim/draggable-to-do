@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { loadToDos } from "./handle.localStorage";
+import { loadToDos } from "./localStorage";
 
 export interface IToDo {
   text: string;
@@ -10,7 +10,7 @@ export interface IToDoState {
   [key: string]: IToDo[];
 }
 
-const defaultToDos: IToDoState = {
+export const defaultToDos: IToDoState = {
   "To Do": [],
   Doing: [],
   Done: [],
