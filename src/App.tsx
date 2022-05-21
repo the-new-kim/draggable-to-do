@@ -10,7 +10,6 @@ import { saveToDos } from "./models/localStorage";
 import { TrashTypes, trashState } from "./models/trash";
 
 const Wrapper = styled.div`
-  @import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100;8..144,500;8..144,700&display=swap");
   font-family: "Roboto Flex", sans-serif;
   overflow: hidden;
 `;
