@@ -11,9 +11,16 @@ export interface IToDoState {
 }
 
 export const defaultToDos: IToDoState = {
-  "To Do": [],
-  Doing: [],
-  Done: [],
+  "To Do": [
+    { text: "Go to supermarket", id: 1 },
+    { text: "Clean living room", id: 2 },
+    { text: "Finish homework", id: 3 },
+  ],
+  Doing: [{ text: "Plan wedding", id: 4 }],
+  Done: [
+    { text: "Pick up kids", id: 5 },
+    { text: "Exercise", id: 6 },
+  ],
 };
 
 export const toDoState = atom<IToDoState>({

@@ -10,25 +10,48 @@ import { saveToDos } from "./models/localStorage";
 import { TrashTypes, trashState } from "./models/trash";
 
 const Wrapper = styled.div`
-  width: 100vw;
-  height: auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  padding: 10px;
+  @import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100;8..144,500;8..144,700&display=swap");
+  font-family: "Roboto Flex", sans-serif;
+  overflow: hidden;
 `;
 
 const Form = styled.form`
   margin-bottom: 10px;
+
+  input {
+    ::placeholder {
+      transition: color ease-out 300ms;
+      color: #e5e5e5;
+    }
+
+    background-color: #735085;
+    width: 100%;
+    min-width: 250px;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    transition: background-color ease-out 300ms, box-shadow ease-out 300ms;
+
+    :focus {
+      background-color: ${(props) => props.theme.cardBgColor};
+      box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px,
+        rgba(0, 0, 0, 0.24) 0px 1px 2px;
+      outline: 0;
+
+      ::placeholder {
+        color: #777777;
+      }
+    }
+  }
 `;
 
 const BoardsContainer = styled.div`
-  display: grid;
-  width: 100%;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 10px;
+  display: inline-flex;
+  padding: 20px;
+  width: 100vw;
+  height: auto;
+  min-height: 100vh;
+  overflow: auto;
 `;
 
 interface IForm {
@@ -126,13 +149,6 @@ function App() {
   return (
     <Wrapper>
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
-        <Form onSubmit={handleSubmit(onValid)}>
-          <input
-            {...register("board", { required: true })}
-            type="text"
-            placeholder="Create a List"
-          />
-        </Form>
         <Droppable
           droppableId="list"
           type={TrashTypes.BOARD}
@@ -148,6 +164,13 @@ function App() {
                   index={index}
                 />
               ))}
+              <Form onSubmit={handleSubmit(onValid)}>
+                <input
+                  {...register("board", { required: true })}
+                  type="text"
+                  placeholder="Add a list"
+                />
+              </Form>
               {magic.placeholder}
             </BoardsContainer>
           )}

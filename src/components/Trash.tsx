@@ -8,16 +8,15 @@ interface IWrapperProps {
 
 const Wrapper = styled.div<IWrapperProps>`
   position: fixed;
-  bottom: 10px;
-  right: 10px;
-  width: 200px;
-  height: 200px;
-  background-color: darkblue;
+  bottom: 50px;
+  right: 50px;
+  width: 100px;
+  height: 100px;
   color: white;
   font-size: 50px;
   transition: opacity ease-out 500ms, transform ease-out 100ms;
   opacity: ${(props) => (props.isVisible ? 1 : 0)};
-  transform: ${(props) => (props.isDraggingOver ? "scale(2)" : "scale(1)")};
+  transform: ${(props) => (props.isDraggingOver ? "scale(1.5)" : "scale(1)")};
 `;
 
 interface ITrashProps {
@@ -35,7 +34,20 @@ function Trash({ type, isVisible }: ITrashProps) {
           ref={magic.innerRef}
           {...magic.droppableProps}
         >
-          Trash
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            />
+          </svg>
           {magic.placeholder}
         </Wrapper>
       )}
