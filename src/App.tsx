@@ -1,29 +1,35 @@
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { toDoState } from "./models/toDos";
+import {
+  IToDoState,
+  saveToLocalStorage,
+  toDoState,
+  TODOS_LS,
+} from "./models/toDos";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import Board from "./components/Board";
 import Trash from "./components/Trash";
 import { useEffect } from "react";
-import { saveToDos } from "./models/localStorage";
 import { TrashTypes, trashState } from "./models/trash";
+import Header from "./components/Header";
 
 const Wrapper = styled.div`
-  font-family: "Roboto Flex", sans-serif;
+  position: relative;
+  background-color: ${(props) => props.theme.bgColor};
   overflow: hidden;
 `;
 
 const Form = styled.form`
   margin-bottom: 10px;
-
+  height: fit-content;
   input {
     ::placeholder {
       transition: color ease-out 300ms;
-      color: #e5e5e5;
+      color: ${(props) => props.theme.textColorLight};
     }
 
-    background-color: #735085;
+    background-color: ${(props) => props.theme.boardFormBgColor};
     width: 100%;
     min-width: 250px;
     padding: 10px;
@@ -46,7 +52,7 @@ const Form = styled.form`
 
 const BoardsContainer = styled.div`
   display: inline-flex;
-  padding: 20px;
+  padding: ${(props) => `${props.theme.headerHeight + 20}px`} 20px 20px;
   width: 100vw;
   height: auto;
   min-height: 100vh;
@@ -75,7 +81,6 @@ function App() {
     });
 
     const { destination, source } = info;
-
     if (!destination) return;
 
     // moving || removing Boards
@@ -83,17 +88,17 @@ function App() {
       destination.droppableId === "list" ||
       destination.droppableId === TrashTypes.BOARD
     ) {
-      return setToDos((allToDos) => {
-        const boardTitles = Object.keys(allToDos);
+      return setToDos((allBoards) => {
+        const boardTitles = Object.keys(allBoards);
         const sourceTitle = boardTitles[source.index];
 
         boardTitles.splice(source.index, 1);
         destination.droppableId === "list" &&
           boardTitles.splice(destination.index, 0, sourceTitle);
         let result = {};
-        //typescript warns... better find other solution...
+
         boardTitles.map((boardName) => {
-          result = { ...result, [boardName]: allToDos[boardName] };
+          result = { ...result, [boardName]: allBoards[boardName] };
         });
 
         return result;
@@ -105,29 +110,29 @@ function App() {
       destination.droppableId === source.droppableId ||
       destination.droppableId === TrashTypes.CARD
     ) {
-      return setToDos((allToDos) => {
-        const copyToDo = allToDos[source.droppableId][source.index];
-        const copyBoard = [...allToDos[source.droppableId]];
+      return setToDos((allBoards) => {
+        const toDoCopy = allBoards[source.droppableId][source.index];
+        const boardCopy = [...allBoards[source.droppableId]];
 
-        copyBoard.splice(source.index, 1);
+        boardCopy.splice(source.index, 1);
         destination.droppableId === source.droppableId &&
-          copyBoard.splice(destination.index, 0, copyToDo);
+          boardCopy.splice(destination.index, 0, toDoCopy);
 
-        return { ...allToDos, [source.droppableId]: copyBoard };
+        return { ...allBoards, [source.droppableId]: boardCopy };
       });
     }
     // moving card form a board to the other board
     if (destination.droppableId !== source.droppableId) {
-      return setToDos((allToDos) => {
-        const copyToDo = allToDos[source.droppableId][source.index];
-        const sourceBoard = [...allToDos[source.droppableId]];
-        const targetBoard = [...allToDos[destination.droppableId]];
+      return setToDos((allBoards) => {
+        const toDoCopy = allBoards[source.droppableId][source.index];
+        const sourceBoard = [...allBoards[source.droppableId]];
+        const targetBoard = [...allBoards[destination.droppableId]];
 
         sourceBoard.splice(source.index, 1);
-        targetBoard.splice(destination.index, 0, copyToDo);
+        targetBoard.splice(destination.index, 0, toDoCopy);
 
         return {
-          ...allToDos,
+          ...allBoards,
           [source.droppableId]: sourceBoard,
           [destination.droppableId]: targetBoard,
         };
@@ -136,17 +141,18 @@ function App() {
   };
 
   const onValid = ({ board }: IForm) => {
-    setToDos((allToDos) => {
-      return { ...allToDos, [board]: [] };
+    setToDos((allBoards) => {
+      return { ...allBoards, [board]: [] };
     });
 
     setValue("board", "");
   };
 
-  useEffect(() => saveToDos(toDos), [toDos]);
+  useEffect(() => saveToLocalStorage<IToDoState>(TODOS_LS, toDos), [toDos]);
 
   return (
     <Wrapper>
+      <Header />
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         <Droppable
           droppableId="list"
@@ -167,7 +173,7 @@ function App() {
                 <input
                   {...register("board", { required: true })}
                   type="text"
-                  placeholder="Add a list"
+                  placeholder="+ Add a List"
                 />
               </Form>
               {magic.placeholder}

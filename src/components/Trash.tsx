@@ -8,15 +8,22 @@ interface IWrapperProps {
 
 const Wrapper = styled.div<IWrapperProps>`
   position: fixed;
-  bottom: 50px;
-  right: 50px;
-  width: 100px;
-  height: 100px;
+  bottom: 30px;
+  right: 30px;
+  width: 15vw;
+  height: 15vw;
+  max-width: 100px;
+  max-height: 100px;
   color: white;
   font-size: 50px;
   transition: opacity ease-out 500ms, transform ease-out 100ms;
+  z-index: 10000;
   opacity: ${(props) => (props.isVisible ? 1 : 0)};
   transform: ${(props) => (props.isDraggingOver ? "scale(1.5)" : "scale(1)")};
+
+  svg {
+    filter: drop-shadow(3px 5px 10px rgba(0, 0, 0, 0.6));
+  }
 `;
 
 interface ITrashProps {

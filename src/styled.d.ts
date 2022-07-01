@@ -7,6 +7,10 @@ declare module "styled-components" {
     bgColor: string;
     boardBgColor: string;
     cardBgColor: string;
-    formBgColor: string;
+    cardFormBgColor: string;
+    headerBgColor: string;
+    boardFormBgColor: string;
+    headerHeight: number;
+    textColorLight: string;
   }
 }
