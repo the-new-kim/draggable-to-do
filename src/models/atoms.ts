@@ -49,3 +49,20 @@ export const listTitleState = atom({
       ? loadFromLocalStorage(TITLE_LS).title
       : "My ToDo List",
 });
+
+export enum TrashTypes {
+  BOARD = "BOARD",
+  CARD = "CARD",
+}
+
+interface ITrashState {
+  [key: string]: boolean;
+}
+
+export const trashState = atom<ITrashState>({
+  key: "trashStatus",
+  default: {
+    [TrashTypes.BOARD]: false,
+    [TrashTypes.CARD]: false,
+  },
+});

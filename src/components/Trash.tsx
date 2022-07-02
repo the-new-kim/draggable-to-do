@@ -22,7 +22,7 @@ const Wrapper = styled.div<IWrapperProps>`
   transform: ${(props) => (props.isDraggingOver ? "scale(1.5)" : "scale(1)")};
 
   svg {
-    filter: drop-shadow(3px 5px 10px rgba(0, 0, 0, 0.6));
+    filter: drop-shadow(3px 2px 5px rgba(0, 0, 0, 0.3));
   }
 `;
 

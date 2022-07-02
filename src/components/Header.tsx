@@ -3,7 +3,9 @@ import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import useOutsideClick from "../hooks/useOutsideClick";
-import { listTitleState, saveToLocalStorage, TITLE_LS } from "../models/toDos";
+import { listTitleState, saveToLocalStorage, TITLE_LS } from "../models/atoms";
+import { ThemeColors } from "../theme";
+import Weather from "./Weather";
 
 const Wrapper = styled.header`
   position: fixed;
@@ -15,7 +17,7 @@ const Wrapper = styled.header`
   background-color: ${(props) => props.theme.headerBgColor};
   color: ${(props) => props.theme.textColorLight};
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
 `;
 
@@ -54,6 +56,19 @@ const TitleForm = styled.form<{ $isOpen: boolean }>`
       outline: 0;
     }
   }
+`;
+
+const Notification = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  > * {
+    margin-right: 10px;
+  }
+`;
+
+const ThemeSelector = styled.div`
+  background-color: red;
 `;
 
 interface ITitleForm {
@@ -108,6 +123,16 @@ function Header() {
           ></input>
         </TitleForm>
       </Title>
+      <Notification>
+        <Weather />
+        <ThemeSelector>
+          {Object.values(ThemeColors).map((color) => (
+            <div key={color} style={{ backgroundColor: color }}>
+              {color}
+            </div>
+          ))}
+        </ThemeSelector>
+      </Notification>
     </Wrapper>
   );
 }

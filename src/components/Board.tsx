@@ -3,14 +3,14 @@ import { Draggable, Droppable } from "react-beautiful-dnd";
 import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { TrashTypes } from "../models/trash";
+import { TrashTypes } from "../models/atoms";
 import {
   IToDo,
   IToDoState,
   saveToLocalStorage,
   toDoState,
   TODOS_LS,
-} from "../models/toDos";
+} from "../models/atoms";
 import Card from "./Card";
 import useOutsideClick from "../hooks/useOutsideClick";
 
@@ -138,9 +138,7 @@ function Board({ boardTitle, cards, index }: IBoardProps) {
       let boardIndex: number | undefined;
 
       Object.entries(allBoards).map((board, index) => {
-        if (board[0] === boardTitle) {
-          boardIndex = index;
-        }
+        if (board[0] === boardTitle) boardIndex = index;
       });
 
       if (typeof boardIndex === "undefined") return allBoards;
@@ -150,12 +148,13 @@ function Board({ boardTitle, cards, index }: IBoardProps) {
 
       let result = {};
 
-      boardTitles.map((key) => {
-        result = {
-          ...result,
-          [key]: key !== title ? allBoards[key] : allBoards[boardTitle],
-        };
-      });
+      boardTitles.map(
+        (key) =>
+          (result = {
+            ...result,
+            [key]: key !== title ? allBoards[key] : allBoards[boardTitle],
+          })
+      );
 
       return result;
     });

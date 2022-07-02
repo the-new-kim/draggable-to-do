@@ -6,12 +6,12 @@ import {
   saveToLocalStorage,
   toDoState,
   TODOS_LS,
-} from "./models/toDos";
+} from "./models/atoms";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import Board from "./components/Board";
 import Trash from "./components/Trash";
 import { useEffect } from "react";
-import { TrashTypes, trashState } from "./models/trash";
+import { TrashTypes, trashState } from "./models/atoms";
 import Header from "./components/Header";
 
 const Wrapper = styled.div`
@@ -97,9 +97,10 @@ function App() {
           boardTitles.splice(destination.index, 0, sourceTitle);
         let result = {};
 
-        boardTitles.map((boardName) => {
-          result = { ...result, [boardName]: allBoards[boardName] };
-        });
+        boardTitles.map(
+          (boardName) =>
+            (result = { ...result, [boardName]: allBoards[boardName] })
+        );
 
         return result;
       });

@@ -12,5 +12,6 @@ declare module "styled-components" {
     boardFormBgColor: string;
     headerHeight: number;
     textColorLight: string;
+    textColor: string;
   }
 }

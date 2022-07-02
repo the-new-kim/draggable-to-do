@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client";
 import { RecoilRoot } from "recoil";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 import App from "./App";
-import { defaultTheme } from "./theme";
+import { defaultTheme, pastelTheme, vintageTheme } from "./theme";
 import { Helmet } from "react-helmet";
 import reset from "styled-reset";
 
@@ -15,6 +15,7 @@ ${reset}
 
 html,body,input[type="text"] {
 	font-family: "Roboto Flex", sans-serif;
+  color: ${(props) => props.theme.textColor}
 }
 `;
 
@@ -24,7 +25,7 @@ const root = ReactDOM.createRoot(
 root.render(
   //   <React.StrictMode>
   <RecoilRoot>
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={pastelTheme}>
       <GlobalStyle />
       <Helmet>
         <title>Trello clone</title>
