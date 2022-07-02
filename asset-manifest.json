@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/react-trello-clone/static/js/main.1fa8231f.js",
+    "main.js": "/react-trello-clone/static/js/main.2c940c53.js",
     "index.html": "/react-trello-clone/index.html",
-    "main.1fa8231f.js.map": "/react-trello-clone/static/js/main.1fa8231f.js.map"
+    "main.2c940c53.js.map": "/react-trello-clone/static/js/main.2c940c53.js.map"
   },
   "entrypoints": [
-    "static/js/main.1fa8231f.js"
+    "static/js/main.2c940c53.js"
   ]
 }
