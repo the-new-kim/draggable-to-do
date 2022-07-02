@@ -25,7 +25,7 @@ const Wrapper = styled.div<IWrapperProps>`
   display: flex;
   flex-direction: column;
   margin-right: 10px;
-  border-radius: 10px;
+  border-radius: ${(props) => props.theme.borderRadius};
   overflow: hidden;
 
   transition: box-shadow ease-out 200ms;
@@ -69,17 +69,9 @@ const TitleForm = styled.form`
   > input {
     width: 100%;
     background-color: ${(props) => props.theme.cardFormBgColor};
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
+
     transition: background-color ease-out 300ms, box-shadow ease-out 300ms;
     font-weight: bold;
-    :focus {
-      background-color: ${(props) => props.theme.cardBgColor};
-      box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px,
-        rgba(0, 0, 0, 0.24) 0px 1px 2px;
-      outline: 0;
-    }
   }
 `;
 

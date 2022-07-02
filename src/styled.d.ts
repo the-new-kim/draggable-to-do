@@ -9,9 +9,9 @@ declare module "styled-components" {
     cardBgColor: string;
     cardFormBgColor: string;
     headerBgColor: string;
-    boardFormBgColor: string;
     headerHeight: number;
     textColorLight: string;
     textColor: string;
+    borderRadius: string;
   }
 }

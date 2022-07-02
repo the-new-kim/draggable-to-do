@@ -1,5 +1,12 @@
 import { atom } from "recoil";
-// import { loadToDos } from "./localStorage";
+import { DefaultTheme } from "styled-components";
+import {
+  defaultTheme,
+  oceanTheme,
+  pastelTheme,
+  valentineTheme,
+  vintageTheme,
+} from "../theme";
 
 export interface IToDo {
   text: string;
@@ -12,6 +19,7 @@ export interface IToDoState {
 
 export const TODOS_LS = "toDos";
 export const TITLE_LS = "listTitle";
+export const THEME_LS = "theme";
 
 export const loadFromLocalStorage = (dataName: string) => {
   const loadedData = localStorage.getItem(dataName);
@@ -42,12 +50,12 @@ export const toDoState = atom<IToDoState>({
   default: loadFromLocalStorage(TODOS_LS) ?? defaultToDos,
 });
 
-export const listTitleState = atom({
+export const listTitleState = atom<string>({
   key: "listTitle",
   default:
     loadFromLocalStorage(TITLE_LS) !== null
       ? loadFromLocalStorage(TITLE_LS).title
-      : "My ToDo List",
+      : "My To Do List",
 });
 
 export enum TrashTypes {
@@ -65,4 +73,15 @@ export const trashState = atom<ITrashState>({
     [TrashTypes.BOARD]: false,
     [TrashTypes.CARD]: false,
   },
+});
+
+export const themeState = atom<DefaultTheme[]>({
+  key: "theme",
+  default: loadFromLocalStorage(THEME_LS) ?? [
+    defaultTheme,
+    pastelTheme,
+    vintageTheme,
+    oceanTheme,
+    valentineTheme,
+  ],
 });

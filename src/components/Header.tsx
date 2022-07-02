@@ -4,7 +4,8 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import useOutsideClick from "../hooks/useOutsideClick";
 import { listTitleState, saveToLocalStorage, TITLE_LS } from "../models/atoms";
-import { ThemeColors } from "../theme";
+import Clock from "./Clock";
+import ThemeSelector from "./ThemeSelector";
 import Weather from "./Weather";
 
 const Wrapper = styled.header`
@@ -44,17 +45,9 @@ const TitleForm = styled.form<{ $isOpen: boolean }>`
     width: 100%;
     background-color: ${(props) => props.theme.cardFormBgColor};
     padding: 10px;
-    border-radius: 5px;
-    border: none;
-    transition: background-color ease-out 300ms, box-shadow ease-out 300ms;
+
     font-size: large;
     font-weight: bold;
-    :focus {
-      background-color: ${(props) => props.theme.cardBgColor};
-      box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px,
-        rgba(0, 0, 0, 0.24) 0px 1px 2px;
-      outline: 0;
-    }
   }
 `;
 
@@ -62,13 +55,9 @@ const Notification = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  > * {
+  > *:not(:last-child) {
     margin-right: 10px;
   }
-`;
-
-const ThemeSelector = styled.div`
-  background-color: red;
 `;
 
 interface ITitleForm {
@@ -125,13 +114,8 @@ function Header() {
       </Title>
       <Notification>
         <Weather />
-        <ThemeSelector>
-          {Object.values(ThemeColors).map((color) => (
-            <div key={color} style={{ backgroundColor: color }}>
-              {color}
-            </div>
-          ))}
-        </ThemeSelector>
+        <Clock />
+        <ThemeSelector />
       </Notification>
     </Wrapper>
   );

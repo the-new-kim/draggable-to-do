@@ -10,7 +10,7 @@ const Wrapper = styled.div<IWrapperProps>`
   background-color: ${(props) => props.theme.cardBgColor};
   padding: 10px;
   margin-bottom: 10px;
-  border-radius: 5px;
+  border-radius: ${(props) => props.theme.borderRadius};
 
   transition: box-shadow ease-out 200ms;
 

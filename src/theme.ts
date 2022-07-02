@@ -1,12 +1,7 @@
 import { DefaultTheme } from "styled-components";
 
 const headerHeight = 70;
-
-export enum ThemeColors {
-  COLOR_DEFAULT = "#885F9D",
-  COLOR_PASTEL = "#FBE7C6",
-  COLOR_VINTAGE = "#415F6B",
-}
+const borderRadius = "7px";
 
 export const defaultTheme: DefaultTheme = {
   bgColor: "#885F9D",
@@ -14,10 +9,10 @@ export const defaultTheme: DefaultTheme = {
   cardBgColor: "#FEFEFE",
   cardFormBgColor: "#c4c4c4",
   headerBgColor: "#4e335e",
-  boardFormBgColor: "#69487a",
   headerHeight,
   textColorLight: "#e5e5e5",
   textColor: "black",
+  borderRadius,
 };
 
 export const pastelTheme: DefaultTheme = {
@@ -26,20 +21,44 @@ export const pastelTheme: DefaultTheme = {
   cardBgColor: "#ECFDF1",
   cardFormBgColor: "#d9fae2",
   headerBgColor: "#edabb6",
-  boardFormBgColor: "#85D2D0",
   headerHeight,
   textColorLight: "#ECFDF1",
-  textColor: "black",
+  textColor: "#575757",
+  borderRadius,
 };
 
 export const vintageTheme: DefaultTheme = {
-  bgColor: "#415F6B",
-  boardBgColor: "#07D2BE",
-  cardBgColor: "#B4F8C8",
-  cardFormBgColor: "#DCBAA9",
-  headerBgColor: "#1B2C4C",
-  boardFormBgColor: "#65463E",
+  bgColor: "#E0A370",
+  boardBgColor: "#DEC584",
+  cardBgColor: "#E2D7A7",
+  cardFormBgColor: "#cfb77a",
+  headerBgColor: "#A16B56",
   headerHeight,
-  textColorLight: "#ECFDF1",
-  textColor: "#1B2C4C",
+  textColorLight: "#E2D7A7",
+  textColor: "#567D89",
+  borderRadius,
+};
+
+export const oceanTheme: DefaultTheme = {
+  bgColor: "#5ECED7",
+  boardBgColor: "#8BD9DE",
+  cardBgColor: "#E4E6E3",
+  cardFormBgColor: "#CBE2E1",
+  headerBgColor: "#1B8BB8",
+  headerHeight,
+  textColorLight: "#E4E6E3",
+  textColor: "#005999",
+  borderRadius,
+};
+
+export const valentineTheme: DefaultTheme = {
+  bgColor: "#F186A1",
+  boardBgColor: "#BFC1C2",
+  cardBgColor: "#FFFFFF",
+  cardFormBgColor: "#D8D8D8",
+  headerBgColor: "#BD5B92",
+  headerHeight,
+  textColorLight: "#FFFFFF",
+  textColor: "#BD5B92",
+  borderRadius,
 };
