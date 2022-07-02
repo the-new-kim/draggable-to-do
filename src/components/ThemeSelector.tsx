@@ -9,6 +9,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
 `;
 
 const CurrentColor = styled.div`
@@ -16,9 +17,9 @@ const CurrentColor = styled.div`
   height: 15px;
   background-color: ${(props) => props.theme.bgColor};
   border-radius: 50%;
-  z-index: 2;
   cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  z-index: 101;
 `;
 
 const ThemeUl = styled.ul<{ $isOpen: boolean }>`

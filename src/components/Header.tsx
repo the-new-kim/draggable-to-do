@@ -25,7 +25,7 @@ const Wrapper = styled.header`
 const Title = styled.div`
   position: relative;
   > h1 {
-    font-size: large;
+    font-size: 1.3em;
     font-weight: bold;
     cursor: pointer;
     padding: 10px;

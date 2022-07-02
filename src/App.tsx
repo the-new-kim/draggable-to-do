@@ -12,6 +12,12 @@ ${reset}
   box-sizing: border-box;
 }
 
+html,body {
+  @media (max-width: 700px) {
+    font-size: 0.9rem;
+  }
+}
+
 html,body,input[type="text"] {
 	font-family: "Roboto Flex", sans-serif;
   color: ${(props) => props.theme.textColor}
