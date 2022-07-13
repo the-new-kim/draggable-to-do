@@ -1,7 +1,7 @@
 # To Do List
 
-draggable & droppable to do list made after
-trello challenge of [Nomad Coders](https://nomadcoders.co/)' react master class course.
+a draggable & droppable to do list made after watching
+the react master class course of [Nomad Coders](https://nomadcoders.co/).
 
 ## Features
 
@@ -15,5 +15,7 @@ trello challenge of [Nomad Coders](https://nomadcoders.co/)' react master class 
 - `react beautiful dnd`
 - `styled components`
 - `recoil`
+
+## Page Link
 
 [Link](https://the-new-kim.github.io/to-do-list/)
