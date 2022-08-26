@@ -2,7 +2,7 @@
 
 built with react.
 
-## [View Live](https://the-new-kim.github.io/to-do-list/) 👈
+[View Live](https://the-new-kim.github.io/to-do-list/) 👈
 
 ## Features
 
