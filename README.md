@@ -1,7 +1,8 @@
 # To Do List
 
-a draggable & droppable to do list made after watching
-the react master class course of [Nomad Coders](https://nomadcoders.co/).
+built with react.
+
+[View Live](https://the-new-kim.github.io/to-do-list/) 👈
 
 ## Features
 
@@ -16,6 +17,6 @@ the react master class course of [Nomad Coders](https://nomadcoders.co/).
 - `styled components`
 - `recoil`
 
-## Page Link
+## References
 
-[Link](https://the-new-kim.github.io/to-do-list/)
+[Nomad Coders](https://nomadcoders.co/)
